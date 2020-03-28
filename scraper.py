@@ -1,20 +1,24 @@
-import urllib
+import urllib.request
 from bs4 import BeautifulSoup
 
 def main():
-    site = simple_get() #Makes a request to the site
+    site = simple_get("https://www.classifiedads.com/search.php?cid=326&lid=rx8008&lname=Seattle%2C+WA&from=s&keywords=") #Makes a request to the site
     siteToParse = class_finder(site)
     results = href_finder(siteToParse)
-    links = []
-    for x in results: 
-       links.append(str(x))
-    f = open("links.txt", "w")
-    f.write('\n'.join(links))
-    f.close
+    match = open_links(results)
+    
+    if match == True:
+        print("Match Found!")
+
+    # f = open("links.txt", "w")
+    # f.write('\n'.join(links))
+    # f.close
 
 
-def simple_get():
-    url = 'https://www.classifiedads.com/search.php?cid=326&lid=rx8008&lname=Seattle%2C+WA&from=s&keywords='
+
+
+def simple_get(url):
+    url = url
     hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
        'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
@@ -36,7 +40,26 @@ def class_finder(site):
 def href_finder(site):
     site = site
     soup = BeautifulSoup(str(site), "html.parser")
-    results = soup.find_all('a')
-    return results
-    
+    links = []
+    for link in soup.find_all('a'):
+        links.append("https:" + link.get('href'))
+    return links
+
+def open_links(links):
+    bad_terms = []
+    with open("bad terms.txt", "r") as term:
+        for x in term:
+            bad_terms.append(x)
+
+    for x in links:
+        sites = simple_get(x)
+        soup = BeautifulSoup(sites, "html.parser")
+        
+        newList = []
+        newList.append(str(soup))    
+
+        for i in newList:
+            result = [x for x in bad_terms if i in x]
+            return "\n".join(result)
+
 main()
