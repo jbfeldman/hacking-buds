@@ -1,22 +1,17 @@
 import urllib
-import csv
 from bs4 import BeautifulSoup
-import re
-import pandas as pd 
-
-
-        
 
 def main():
-    site = 'https://www.classifiedads.com/search.php?cid=326&lid=rx8008&lname=Seattle%2C+WA&from=s&keywords='
-    siteList = (class_finder())
-    #siteList, extraList = getPageLink(siteList, site) #function sorts through duplicates, external links, javascript:void(0) --- it is worth checking to see if any of these are important and should be scanned
-    #extraList = [x.decode("utf-8") for x in extraList]
+    site = simple_get() #Makes a request to the site
+    siteToParse = class_finder(site)
+    results = href_finder(siteToParse)
+    links = []
+    for x in results: 
+       links.append(str(x))
+    f = open("links.txt", "w")
+    f.write('\n'.join(links))
+    f.close
 
-    f = open('links.txt', "w")
-    f.write('\n'.join(siteList))
-    #f.write('\n'.join(extraList))
-    f.close()
 
 def simple_get():
     url = 'https://www.classifiedads.com/search.php?cid=326&lid=rx8008&lname=Seattle%2C+WA&from=s&keywords='
@@ -31,64 +26,17 @@ def simple_get():
     return response
 
 
-def class_finder():
-    site = simple_get()
+def class_finder(site):
+    site = site
     soup = BeautifulSoup(site, "html.parser")
-    results = soup.find_all('a',{"class": ''})
+    results = soup.find_all('div',{"class": "resultitem"})
+    return results
+
+
+def href_finder(site):
+    site = site
+    soup = BeautifulSoup(str(site), "html.parser")
+    results = soup.find_all('a')
+    return results
     
-    print(results)
-
-
-def javascript_finder():
-    site = simple_get()
-    soup = BeautifulSoup(site, "html.parser")
-    l = [i.get('src') for i in soup.find_all('script') if i .get('src')]
-    l = [x.encode('utf-8') for x in l]
-    return l
-
-
-def page_navi():
-    site = simple_get()
-    soup = BeautifulSoup(site, "html.parser")
-    l = [i.get('href') for i in soup.find_all('a') if i .get('href')]
-    l = [x.encode('utf-8') for x in l]
-    return l
-
-
-def img_finder():
-    site = simple_get()
-    soup = BeautifulSoup(site, "html.parser")
-    l = [i.get('src') for i in soup.find_all('img') if i .get('src')]
-    l = [x.encode('utf-8') for x in l]
-    return l
-
-
-def css_finder():
-    site = simple_get()
-    soup = BeautifulSoup(site, "html.parser")
-    l = [i.get('href') for i in soup.find_all('link') if i .get('href')]
-    l = [x.encode('utf-8') for x in l]
-    return l
-
-
-def getPageLink(siteList, site):
-    siteList = list(set(siteList))
-    extraList = []
-    for item in siteList:
-        if "http" in str(item):
-            extraList.append(item)
-            siteList.remove(item)
-    for item in siteList:
-        if 'tel:' in str(item):
-            siteList.remove(item)
-    for item in siteList:
-        if item == "javascript:void(0);":
-            siteList.remove(item)
-    for item in siteList:
-        if item == "#":
-            siteList.remove(item)
-
-    siteList = [str(s) for s in siteList]
-    return siteList, extraList
-
-class_finder()
+main()
