@@ -5,6 +5,8 @@ import logging.handlers
 from logging.handlers import RotatingFileHandler
 import json
 from flask_cors import CORS, cross_origin
+import scraper
+
 
 
 DEFAULT_LIST = [
@@ -30,10 +32,13 @@ CORS(application)
 def process_html():
     if request.method == 'POST':
         json_html = json.dumps(request.get_json()['html'])
-        query_html = str(request.args.get('html'))
-        form_html = request.form.get('html')
+        url =  json.dumps(request.get_json()['url']).replace('"','')
+        # query_html = str(request.args.get('html'))
+        # form_html = request.form.get('html')
         logger.debug('json_html')
-        return json.dumps(DEFAULT_LIST + [{'html': json_html[0:45]}])
+        res = scraper.main(json_html, url)
+        return json.dumps(res)
+        #return json.dumps(DEFAULT_LIST + [{'html': json_html[0:45]}])
     else:
         return 'try POSTING next time bud'
 
