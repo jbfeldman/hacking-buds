@@ -1,0 +1,4 @@
+contentscript.js= reads the webpage, possibly uses Jathan's cool nonsense to recursively read the page for links n stuff. Feeds all IOCs
+    it detects back to storage
+popup.js= displays the IOCs and their risk rules.
+Do we do the matchup against our database in popup.js, contentscript.js, or somewhere else? Who knows?

@@ -1,0 +1,19 @@
+{
+  "name": "Trafficking indicators warning",
+  "version": "1.0",
+  "description": "Identifies and highlights potential risk factors for human trafficking",
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "content_scripts": [{
+    "matches": ["*://*.com/*"],
+    "js": ["content.js"]
+  }],
+  "browser_action": {
+    "default_popup": "popup.html"
+
+  },
+  "permissions": ["activeTab", "declarativeContent","storage", "<all_urls>"],
+  "manifest_version": 2
+}
