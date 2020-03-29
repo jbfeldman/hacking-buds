@@ -1,25 +1,33 @@
 body {
-    width: 600px; 
-    background-color: #474448;
+    width: 600px;
+    background-color: white;
 }
 
 h2{
     text-align: center;
     font-weight: 500;
-    color: #eb5e28;
+    color: black;
 }
+
+h3{
+    text-align: center;
+    font-weight: 400;
+    color: black;
+}
+
 
 p{
     font-size: 16px;
     line-height: 24px;
 }
 
-.panel{  
+.panel{
     border-radius: 10px;
     border: 1px solid #252422;
     padding: 20px;
     width: 90%;
-    background-color: rgba(204,197,185,.5)
+    background-color: rgba(204,197,185,.5);
+    font-size: 15px;
 }
 
 
@@ -50,3 +58,10 @@ p{
         display:block;
         margin:0.4em auto;}
 }
+
+img{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+

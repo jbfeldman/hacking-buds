@@ -5,10 +5,11 @@ active_tab_url = ''
 
 function update_list(parser_content){
     this_page = parser_content.root_matches
-    new_html = 'This Pages Score: ' + JSON.stringify(this_page.score)
+    new_html = '<h3> This Page\'s Score: ' + JSON.stringify(this_page.score) + '</h3>'
    // new_html = 'Suspicious phrases on this page:\n';
     new_html += '<ul class="panel">';
     for (var word in this_page){
+      if (word === 'score'){continue;}
       to_add = '<li> <b>' + word + '</b><ul> <li> Reason: ' + this_page[word].reason + '</li>';
       to_add += '<li> Risk: ' + this_page[word].risk + '</li> \n<li> Count: '+  this_page[word].count;
       to_add += '</li> </ul> </li>';
@@ -18,7 +19,7 @@ function update_list(parser_content){
 
     entries = Object.entries(parser_content.link_matches)
     if (entries.length != 0){
-      new_html+= 'Suspicious Phrases on links on this page'
+      new_html+= '<h2> Suspicious Phrases on links on this page </h2>'
       new_html += '<ul class="panel">';
       for (var i in entries){
         to_add = '<li> <b>' + entries[i][0] + '</b><ul> <li> Score: ' + entries[i][1].score + '</li>';
@@ -37,7 +38,7 @@ function update_list(parser_content){
 }
 function doStuffWithDom(domContent) {
   list.innerHTML = 'Loading...'
-  fetch('http://localhost:5000/api'/*'http://chtc-uncalled-four.us-west-2.elasticbeanstalk.com/api'*/, {'method': 'POST', 'mode': 'cors',
+  fetch(/*'http://localhost:5000/api'*/'http://chtc-uncalled-four.us-west-2.elasticbeanstalk.com/api', {'method': 'POST', 'mode': 'cors',
                                       credentials: 'include',
                                       body: JSON.stringify({"html": String(domContent), 'url': active_tab_url}),
                                       headers: {

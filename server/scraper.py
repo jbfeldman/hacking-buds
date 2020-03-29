@@ -91,14 +91,20 @@ def search_terms(bad_terms, blobs):
         v['terms'] = list(v['terms'])
 
     #calculate Score
+    denom = sum(WEIGHTING)
+
     for k,v in results.items():
         denom = 0
         numerator = 0
         for score in v['risk']:
-            numerator+= score * WEIGHTING[score]
+            print(f'init score is {score}')
+            print(f'init weight is {WEIGHTING[score]} ')
+            numerator += score * WEIGHTING[score]
             denom += WEIGHTING[score]
-        denom = 1 if denom ==0 else 1
+        denom = 1 if denom ==0 else denom
         v['score'] = round(numerator/denom, 2)
+        print(f'score is {v["score"]}')
+
     return results
 
 def root_search(bad_terms, html):
@@ -115,15 +121,12 @@ def root_search(bad_terms, html):
                 results[term] = result
 
     denom = 0
+    scores = []
     numerator = 0
     for k,v in results.items():
 
-        numerator+= v['risk'] * WEIGHTING[v['risk']]
-        a = f'risk is {v["risk"]}'
-        b = f'WEIGHTING is {WEIGHTING[v["risk"]]}'
-        print(a + b )
+        numerator += v['risk'] * WEIGHTING[v['risk']]
         denom += WEIGHTING[v['risk']]
-    denom = 1 if denom ==0 else 1
     results['score'] = round(numerator/denom, 2)
     return results
 
