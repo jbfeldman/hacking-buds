@@ -3,18 +3,13 @@ from bs4 import BeautifulSoup
 
 def main():
     site = simple_get("https://www.classifiedads.com/search.php?cid=326&lid=rx8008&lname=Seattle%2C+WA&from=s&keywords=") #Makes a request to the site
+    #site = html
     siteToParse = class_finder(site)
     results = href_finder(siteToParse)
-    match = open_links(results)
-    
-    if match == True:
-        print("Match Found!")
-
-    # f = open("links.txt", "w")
-    # f.write('\n'.join(links))
-    # f.close
-
-
+    matches = open_links(results)
+    if matches:
+        print("Matches Found!")
+        print(matches)
 
 
 def simple_get(url):
@@ -46,20 +41,31 @@ def href_finder(site):
     return links
 
 def open_links(links):
+    sitesToScan = []
+    for x in links:
+        sites = simple_get(x)
+        soup = BeautifulSoup(sites, "html.parser")
+
+        sitesToScan.append(str(soup).lower())
+        sitesToScan.append("<a href=Pedolandasdfasdfasdf</a>")
+    return termSearch(sitesToScan)
+
+def termSearch(htmlToScan):
     bad_terms = []
     with open("bad terms.txt", "r") as term:
         for x in term:
             bad_terms.append(x)
 
-    for x in links:
-        sites = simple_get(x)
-        soup = BeautifulSoup(sites, "html.parser")
-        
-        newList = []
-        newList.append(str(soup))    
-
-        for i in newList:
-            result = [x for x in bad_terms if i in x]
-            return "\n".join(result)
-
+    sitesToScan = htmlToScan #list of strings
+    result = {} 
+    for i in bad_terms:
+        i = i.lower().strip()
+        for x in sitesToScan:
+            if i in x:
+                if i in result:
+                    result[i] += 1
+                else:
+                    result[i] = 1
+    return str(result)
+            
 main()
