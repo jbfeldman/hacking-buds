@@ -6,7 +6,7 @@ active_tab_url = ''
 function update_list(parser_content){
     //new_content is a list of JS objects
     new_html = 'Suspicious phrases on this page:\n';
-    new_html = '<ul>';
+    new_html = '<ul class="panel">';
     this_page = parser_content.root_matches
     for (var word in this_page){
       to_add = '<li> <b>' + word + '</b><ul> <li> Reason: ' + this_page[word].reason + '</li>';
@@ -19,7 +19,7 @@ function update_list(parser_content){
     entries = Object.entries(parser_content.link_matches)
     if (entries.length != 0){
       new_html+= 'Suspicious Phrases on links on this page'
-      new_html += '<ul>';
+      new_html += '<ul class="panel">';
       for (var i in entries){
         to_add = '<li> <b>' + entries[i][0] + '</b><ul> <li> Reason: ' + entries[i][1].reason + '</li>';
         to_add += '<li> Risk: ' + entries[i][1].risk + '</li> \n<li> Count: '+  entries[i][1].count;
