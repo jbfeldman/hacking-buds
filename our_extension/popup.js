@@ -9,28 +9,30 @@ function update_list(parser_content){
     new_html = '<ul>';
     this_page = parser_content.root_matches
     for (var word in this_page){
-      to_add = '<li> Phrase: ' + word + '\nReason: ' + this_page[word].reason + '\n';
-      to_add += 'Risk: ' + this_page[word].risk + '\n Count: '+  this_page[word].count;
-      to_add += '</li>';
+      to_add = '<li> <b>' + word + '</b><ul> <li> Reason: ' + this_page[word].reason + '</li>';
+      to_add += '<li> Risk: ' + this_page[word].risk + '</li> \n<li> Count: '+  this_page[word].count;
+      to_add += '</li> </ul> </li>';
       new_html+= to_add;
     }
     new_html += '</ul>';
 
+    entries = Object.entries(parser_content.link_matches)
+    if (entries.length != 0){
+      new_html+= 'Suspicious Phrases on links on this page'
+      new_html += '<ul>';
+      for (var i in entries){
+        to_add = '<li> <b>' + entries[i][0] + '</b><ul> <li> Reason: ' + entries[i][1].reason + '</li>';
+        to_add += '<li> Risk: ' + entries[i][1].risk + '</li> \n<li> Count: '+  entries[i][1].count;
+        to_add += '<li>' + 'URLS'  + '<ul>';
+        for (var j in entries[i][1].urls){
+          to_add += '<li>' + entries[i][1].urls[j] + '</li>'
+        }
+        to_add += '</li> </ul></li> </ul> </li>';
+        new_html+= to_add;
+      }
 
-    if (Object.keys(parser_content.link_matches).length != 0){
-      other_pages = parser_content.link_mathces
-      new_html += 'Suspicious phrases in links on this page'
-      new_html += JSON.stringify(parser_content.link_matches)
-    //   new_html += '<ul>';
-    //   for (var new_word in other_pages){
-    //     to_add = '<li> Phrase: ' + new_word + '\nReason: ' + other_pages[new_word].reason + '\n';
-    //     to_add += 'Risk: ' + other_pages[new_word].risk + '\n Count: '+  other_pages[new_word].count;
-    //     to_add += '\nurls: ' + JSON.stringify(other_pages[new_word].urls)
-    //     to_add += '</li>';
-    //     new_html += to_add;
-    //   }
     }
-    // new_html += '</ul>'
+    new_html += '</ul>'
 
     list.innerHTML=new_html;
 }

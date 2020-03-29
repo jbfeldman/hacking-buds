@@ -70,26 +70,29 @@ def search_terms(bad_terms, blobs):
         for i in blobs:
             url = i[0]
             html = i[1].lower()
-            if term.lower().strip() in html:
+            num_matches = html.count(term.lower().strip())
+            if num_matches > 0:
                 if term in results:
-                    results[term]['count'] += 1
+                    results[term]['count'] += num_matches
                     results[term]['urls'].add(url)
                 else:
-                    result = {'count': 1, 'urls': set(), 'reason': row[1], 'risk': row[2]}
+                    result = {'count': num_matches, 'urls': set(), 'reason': row[1], 'risk': row[2]}
                     results[term] = result
     for k,v in results.items():
         v['urls'] = list(v['urls'])
     return results
 
 def root_search(bad_terms, html):
+    html = html.lower()
     results = {}
     for row in bad_terms:
         term = row[0]
-        if term.lower().strip() in html.lower():
+        num_matches = html.count(term.lower().strip())
+        if num_matches > 0:
             if term in results:
-                results[term]['count'] += 1
+                results[term]['count'] += num_matches
             else:
-                result = {'count': 1, 'reason': row[1], 'risk': row[2]}
+                result = {'count': num_matches, 'reason': row[1], 'risk': row[2]}
                 results[term] = result
     return results
 
