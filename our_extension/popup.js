@@ -6,14 +6,25 @@ function update_list(new_word_list){
     //new_content is a list of JS objects
     new_html = '<ul>'
     for (i in new_word_list){
-        new_html += '<li> Word: ' + new_word_list[i].word + '\n Reason: ' + new_word_list[i].reason + '</li>'
+        new_html += '<li> Phrase: ' + new_word_list[i].phrase + '\n Reason: ' + new_word_list[i].reason + '</li>'
     }
     new_html += '</ul>'
     list.innerHTML=new_html
 }
 function doStuffWithDom(domContent) {
-    //update_list('whatcha say about this new Dom shiiiiiiiiiiiiiiit')
-    console.log('I received the following DOM content:\n' + domContent);
+  fetch('http://localhost:5000/api', {'method': 'POST', 'mode': 'cors',
+                                      credentials: 'include',
+                                      body:'{"html": "domContent"}',
+                                      headers: {
+                                        'Content-Type': 'application/json'
+                                      }
+                                    })
+    .then((response) => {
+        return response.json();
+      })
+    .then((res) =>{
+      update_list(res)
+    });
 }
 
 button.onclick = function(element) {

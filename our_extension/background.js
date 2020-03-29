@@ -8,9 +8,15 @@ function doStuffWithDom(domContent) {
 }
 
 
-fetch('http://localhost:5000/api', {'method': 'GET', 'mode': 'cors', credentials: 'include'})
+fetch('http://chtc-uncalled-four.us-west-2.elasticbeanstalk.com/api', {'method': 'POST', 'mode': 'cors',
+                                    credentials: 'include',
+                                    body:'{"html": "Some random html"}',
+                                    headers: {
+                                      'Content-Type': 'application/json'
+                                    }
+                                  })
   .then((response) => {
-      return response.text();
+      return response.json();
     })
   .then((text) =>{
     console.log(text)
