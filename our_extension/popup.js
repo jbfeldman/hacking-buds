@@ -4,10 +4,10 @@ let list = document.getElementById('word_list')
 active_tab_url = ''
 
 function update_list(parser_content){
-    //new_content is a list of JS objects
-    new_html = 'Suspicious phrases on this page:\n';
-    new_html = '<ul class="panel">';
     this_page = parser_content.root_matches
+    new_html = 'This Pages Score: ' + JSON.stringify(this_page.score)
+   // new_html = 'Suspicious phrases on this page:\n';
+    new_html += '<ul class="panel">';
     for (var word in this_page){
       to_add = '<li> <b>' + word + '</b><ul> <li> Reason: ' + this_page[word].reason + '</li>';
       to_add += '<li> Risk: ' + this_page[word].risk + '</li> \n<li> Count: '+  this_page[word].count;
@@ -21,11 +21,10 @@ function update_list(parser_content){
       new_html+= 'Suspicious Phrases on links on this page'
       new_html += '<ul class="panel">';
       for (var i in entries){
-        to_add = '<li> <b>' + entries[i][0] + '</b><ul> <li> Reason: ' + entries[i][1].reason + '</li>';
-        to_add += '<li> Risk: ' + entries[i][1].risk + '</li> \n<li> Count: '+  entries[i][1].count;
-        to_add += '<li>' + 'URLS'  + '<ul>';
-        for (var j in entries[i][1].urls){
-          to_add += '<li>' + entries[i][1].urls[j] + '</li>'
+        to_add = '<li> <b>' + entries[i][0] + '</b><ul> <li> Score: ' + entries[i][1].score + '</li>';
+        to_add += '<li>' + 'terms'  + '<ul>';
+        for (var j in entries[i][1].terms){
+          to_add += '<li>' + entries[i][1].terms[j] + '</li>'
         }
         to_add += '</li> </ul></li> </ul> </li>';
         new_html+= to_add;
@@ -38,7 +37,7 @@ function update_list(parser_content){
 }
 function doStuffWithDom(domContent) {
   list.innerHTML = 'Loading...'
-  fetch('http://localhost:5000/api', {'method': 'POST', 'mode': 'cors',
+  fetch('http://localhost:5000/api'/*'http://chtc-uncalled-four.us-west-2.elasticbeanstalk.com/api'*/, {'method': 'POST', 'mode': 'cors',
                                       credentials: 'include',
                                       body: JSON.stringify({"html": String(domContent), 'url': active_tab_url}),
                                       headers: {

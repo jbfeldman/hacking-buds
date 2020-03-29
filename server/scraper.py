@@ -2,6 +2,8 @@ import urllib.request
 from bs4 import BeautifulSoup
 import csv
 
+WEIGHTING = [0, 10, 40, 60, 80, 120]
+
 def main(html, url='replaceme.com'):
     link_matches = {}
     terms = get_terms('bad_terms.csv')
@@ -13,6 +15,8 @@ def main(html, url='replaceme.com'):
         html_blobs = open_links(links)
         link_matches = search_terms(terms, html_blobs)
     root_matches = root_search(terms, html)
+
+
     return {'root_matches': root_matches, 'link_matches': link_matches}
 
 
@@ -72,14 +76,29 @@ def search_terms(bad_terms, blobs):
             html = i[1].lower()
             num_matches = html.count(term.lower().strip())
             if num_matches > 0:
-                if term in results:
-                    results[term]['count'] += num_matches
-                    results[term]['urls'].add(url)
+                print('we found something')
+                if url in results:
+                    print('return trip')
+                    results[url]['terms'].add(term)
+                    results[url]['risk'].append(int(row[2]))
                 else:
-                    result = {'count': num_matches, 'urls': set(), 'reason': row[1], 'risk': row[2]}
-                    results[term] = result
+                    print('first timer')
+                    terms = set()
+                    terms.add(term)
+                    result = {'terms':terms, 'risk': [int(row[2])]}
+                    results[url] = result
     for k,v in results.items():
-        v['urls'] = list(v['urls'])
+        v['terms'] = list(v['terms'])
+
+    #calculate Score
+    for k,v in results.items():
+        denom = 0
+        numerator = 0
+        for score in v['risk']:
+            numerator+= score * WEIGHTING[score]
+            denom += WEIGHTING[score]
+        denom = 1 if denom ==0 else 1
+        v['score'] = round(numerator/denom, 2)
     return results
 
 def root_search(bad_terms, html):
@@ -92,8 +111,21 @@ def root_search(bad_terms, html):
             if term in results:
                 results[term]['count'] += num_matches
             else:
-                result = {'count': num_matches, 'reason': row[1], 'risk': row[2]}
+                result = {'count': num_matches, 'reason': row[1], 'risk': int(row[2])}
                 results[term] = result
+
+    denom = 0
+    numerator = 0
+    for k,v in results.items():
+
+        numerator+= v['risk'] * WEIGHTING[v['risk']]
+        a = f'risk is {v["risk"]}'
+        b = f'WEIGHTING is {WEIGHTING[v["risk"]]}'
+        print(a + b )
+        denom += WEIGHTING[v['risk']]
+    denom = 1 if denom ==0 else 1
+    results['score'] = round(numerator/denom, 2)
     return results
+
 
 
