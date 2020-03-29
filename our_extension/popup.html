@@ -1,26 +1,18 @@
   <!DOCTYPE html>
   <html>
     <head>
-      <style>
-        button {
-          height: 30px;
-          width: 350px;
-          color: white;
-          background-color: green;
-          outline: none;
-        }
-        body {
-          width: 400px; /* your desired width */
-        }
-
-      </style>
+      <link rel="stylesheet" href="cthc.css">
     </head>
+    
     <body>
-      <div> List of suspicious phrases </div>
-      <div id='word_list'>
-        Click the button to search for words on this page
+      <div> 
+        <h2>Suspicious Terms on Page</h2>
       </div>
-      <button id="button">Click me to search</button>
+      <div id='word_list'></div>
+      <div class="button_holder">
+        <button id="button">Suspicious Terms on Postings in Page</button>
+      </div>
       <script src="popup.js"></script>
     </body>
+
   </html>
